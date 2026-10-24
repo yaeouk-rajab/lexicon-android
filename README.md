@@ -7,6 +7,12 @@ engineering than this portfolio's other mobile apps: **on-device caching,
 offline-first document access, and background sync**, rather than another
 push-notification demo.
 
+## Screenshots
+
+![Corpus list, grounded answer and offline cache (Android)](docs/screenshots/overview.png)
+
+_These images are illustrative mockups rendered from this repository's documented screens and API shapes, not captures of a running build. Regenerate or replace them with real captures once the app is running._
+
 ## What it does
 
 - Connects to a self-hosted lexicon deployment (server URL + auth header —
