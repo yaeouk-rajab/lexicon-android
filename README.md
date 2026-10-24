@@ -9,9 +9,9 @@ push-notification demo.
 
 ## Screenshots
 
-![Corpus list, grounded answer and offline cache (Android)](docs/screenshots/overview.png)
+![Connect to lexicon screen first screen on an Android emulator](docs/screenshots/launch.png)
 
-_These images are illustrative mockups rendered from this repository's documented screens and API shapes, not captures of a running build. Regenerate or replace them with real captures once the app is running._
+_A real capture: the app's first screen on an API 34 Android emulator, produced by the manual `Screenshots` workflow (`.github/workflows/screenshots.yml`). It stops at the first screen because everything after it needs a backend._
 
 ## What it does
 
