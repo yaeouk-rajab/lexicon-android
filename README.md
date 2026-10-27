@@ -7,6 +7,12 @@ engineering than this portfolio's other mobile apps: **on-device caching,
 offline-first document access, and background sync**, rather than another
 push-notification demo.
 
+## Screenshots
+
+![Connect to lexicon screen first screen on an Android emulator](docs/screenshots/launch.png)
+
+_A real capture: the app's first screen on an API 34 Android emulator, produced by the manual `Screenshots` workflow (`.github/workflows/screenshots.yml`). It stops at the first screen because everything after it needs a backend._
+
 ## What it does
 
 - Connects to a self-hosted lexicon deployment (server URL + auth header —
