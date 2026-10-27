@@ -1,0 +1,89 @@
+name: Screenshots
+
+# A screenshot of the app's launch screen on a real Android emulator (KVM
+# accelerated, API 34). Run it by hand from the Actions tab. The PNG is
+# uploaded as an artifact; tick "commit" to also push it to docs/screenshots
+# on the branch you ran it from.
+#
+# It does not navigate past the first screen: it opens on the server setup
+# screen, and everything after that needs a lexicon backend.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit the images to docs/screenshots on this branch
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: capture
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    # Only the commit step needs to write; it is skipped unless asked for.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+        with:
+          packages: "platform-tools"
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+
+      - name: Assemble debug APK
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Launch on an emulator and screenshot
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: .github/scripts/capture-android-screenshots.sh app/build/outputs/apk/debug/app-debug.apk dev.arbrajab.lexiconandroid docs/screenshots
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit the images
+        if: ${{ inputs.commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          if git diff --cached --quiet; then
+            echo "No image changes to commit."
+          else
+            git commit -m "Update screenshots from CI"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
