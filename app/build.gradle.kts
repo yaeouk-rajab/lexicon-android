@@ -69,7 +69,7 @@ kotlin {
 val composeBomVersion = "2026.09.00"
 val roomVersion = "2.8.5"
 val retrofitVersion = "3.0.0"
-val workVersion = "2.9.1"
+val workVersion = "2.12.0"
 val coroutinesVersion = "1.11.0"
 val serializationVersion = "1.11.0"
 
@@ -132,4 +132,17 @@ ktlint {
 //   ./gradlew :app:dependencies --write-locks
 dependencyLocking {
     lockAllConfigurations()
+}
+
+// guava before 33.7.2 is flagged by osv-scanner (GHSA-xxph-c9ww-hj94). It arrives through the
+// build tooling (KSP, Android lint) and the unit-test classpaths, and 33.7.2 is a drop-in
+// patch release, so force it everywhere rather than exempting the finding. Regenerate
+// app/gradle.lockfile after changing the version. Drop this once those tools ship a patched
+// guava themselves.
+configurations.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.google.guava" && requested.name == "guava") {
+            useVersion("33.7.2-jre")
+        }
+    }
 }
