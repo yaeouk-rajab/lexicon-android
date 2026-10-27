@@ -133,3 +133,16 @@ ktlint {
 dependencyLocking {
     lockAllConfigurations()
 }
+
+// guava before 33.7.2 is flagged by osv-scanner (GHSA-xxph-c9ww-hj94). It arrives through the
+// build tooling (KSP, Android lint) and the unit-test classpaths, and 33.7.2 is a drop-in
+// patch release, so force it everywhere rather than exempting the finding. Regenerate
+// app/gradle.lockfile after changing the version. Drop this once those tools ship a patched
+// guava themselves.
+configurations.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.google.guava" && requested.name == "guava") {
+            useVersion("33.7.2-jre")
+        }
+    }
+}
