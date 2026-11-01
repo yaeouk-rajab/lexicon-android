@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application") version "9.4.1" apply false
+    id("com.android.application") version "9.5.0" apply false
     // No org.jetbrains.kotlin.android: AGP 9 compiles Kotlin itself ("built-in Kotlin") and
     // rejects that plugin. The Kotlin Gradle plugin version is still pinned to 2.4.20, because
     // plugin.compose (below) depends on kotlin-gradle-plugin at its own version and Gradle picks
