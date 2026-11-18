@@ -1,6 +1,6 @@
 # lexicon-android
 
-A native Android companion app for [lexicon](https://github.com/arb-rajab/lexicon),
+A native Android companion app for [lexicon](https://github.com/yaeouk-rajab/lexicon),
 a grounded RAG document Q&A system. This is a **portfolio / skill-demo
 project** — not a real product — built to show a different kind of mobile
 engineering than this portfolio's other mobile apps: **on-device caching,
